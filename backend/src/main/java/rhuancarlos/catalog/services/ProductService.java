@@ -12,8 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import rhuancarlos.catalog.dto.CategoryDTO;
 import rhuancarlos.catalog.dto.ProductDTO;
+import rhuancarlos.catalog.entities.Category;
 import rhuancarlos.catalog.entities.Product;
+import rhuancarlos.catalog.repositories.CategoryRepository;
 import rhuancarlos.catalog.repositories.ProductRepository;
 import rhuancarlos.catalog.services.exception.DataBaseException;
 import rhuancarlos.catalog.services.exception.ResourceNotFoundException;
@@ -23,6 +26,9 @@ public class ProductService {
 
 	@Autowired
 	private ProductRepository repository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
@@ -41,7 +47,7 @@ public class ProductService {
 	@Transactional
 	public ProductDTO insert(ProductDTO dto) {
 		Product entity = new Product();
-		//entity.setName(dto.getName());
+		copyToDto(dto, entity);
 		entity = repository.save(entity);
 		
 		return new ProductDTO(entity);
@@ -51,8 +57,8 @@ public class ProductService {
 	@Transactional
 	public ProductDTO update(Long id, ProductDTO dto) {
 		try {
-			Product entity = repository.getOne(id);
-			//entity.setName(dto.getName());
+			Product entity = repository.getById(id);
+			copyToDto(dto, entity);
 			entity = repository.save(entity);
 			return new ProductDTO (entity);
 		}
@@ -61,6 +67,8 @@ public class ProductService {
 		}
 		
 	}
+
+	
 
 	public void delete(Long id) {
 		try {
@@ -71,6 +79,21 @@ public class ProductService {
 		}
 		catch(DataIntegrityViolationException e) {
 			throw new DataBaseException("Integrity Violation!"); 
+		}
+		
+	}
+	
+	private void copyToDto(ProductDTO dto, Product entity) {
+		
+		entity.setName(dto.getName());
+		entity.setDescripton(dto.getDescription());
+		entity.setDate(dto.getDate());
+		entity.setPrice(dto.getPrice());
+		entity.setImgUrl(dto.getImgUrl());
+		
+		for (CategoryDTO catDto : dto.getCategories()) {
+			Category category = categoryRepository.getById(catDto.getId());
+			entity.getCategories().add(category);
 		}
 		
 	}
