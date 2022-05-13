@@ -2,12 +2,15 @@ package rhuancarlos.catalog.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import rhuancarlos.catalog.entities.Category;
 
 public class CategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	@NotBlank(message = "Preenchimento requerido")
 	private String name;
 	
 	CategoryDTO(){

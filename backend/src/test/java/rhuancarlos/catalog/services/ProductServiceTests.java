@@ -73,11 +73,11 @@ public class ProductServiceTests {
 		when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
 		when(productRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 		
-		when(productRepository.getById(existingId)).thenReturn(product);
-		when(productRepository.getById(nonExistingId)).thenThrow(EntityNotFoundException.class);
+		when(productRepository.getOne(existingId)).thenReturn(product);
+		when(productRepository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 		
-		when(categoryRepository.getById(existingId)).thenReturn(category);
-		when(categoryRepository.getById(nonExistingId)).thenThrow(EntityNotFoundException.class);
+		when(categoryRepository.getOne(existingId)).thenReturn(category);
+		when(categoryRepository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 		
 		doNothing().when(productRepository).deleteById(existingId);
 		doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingId);
@@ -118,7 +118,7 @@ public class ProductServiceTests {
 	public void updateShouldReturnProductDTOWheIdExists() {
 		ProductDTO result = service.update(existingId, productDto);
 		Assertions.assertNotNull(result);
-		verify(productRepository, times(1)).getById(existingId);
+		verify(productRepository, times(1)).getOne(existingId);
 		verify(productRepository, times(1)).save(product);
 	}
 	
@@ -128,7 +128,7 @@ public class ProductServiceTests {
 		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
 			service.update(nonExistingId, productDto);
 		});
-		verify(productRepository, times(1)).getById(nonExistingId);
+		verify(productRepository, times(1)).getOne(nonExistingId);
 	}
 	
 	@Test
