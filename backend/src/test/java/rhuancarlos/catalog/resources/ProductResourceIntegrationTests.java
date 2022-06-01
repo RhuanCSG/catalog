@@ -19,11 +19,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import rhuancarlos.catalog.dto.ProductDTO;
 import rhuancarlos.catalog.tests.Factory;
+import rhuancarlos.catalog.tests.TokenUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 public class ProductResourceIntegrationTests {
+	
+	@Autowired 
+	private TokenUtil tokenUtil;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -35,9 +39,15 @@ public class ProductResourceIntegrationTests {
 	private Long existingId;
 	private Long nonExistingId;
 	private Long countTotalProducts;
+	private String username;
+	private String password;
 	
 	@BeforeEach
 	void setUp() throws Exception{
+		
+		username = "maria@gmail.com";
+		password = "123456";
+		
 		existingId = 1L;
 		nonExistingId = 1000L;
 		countTotalProducts = 25L;
@@ -63,12 +73,16 @@ public class ProductResourceIntegrationTests {
 	@Test
 	public void updateShouldReturnProductDtoWhenIdExists() throws Exception {
 		
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
+		
 		String jsonBody = objectMapper.writeValueAsString(productDto);
 		
 		String expectedName = productDto.getName();
 		Long expectedId = productDto.getId();
 		
-		ResultActions result = mockMvc.perform(put("/products/{id}", existingId)
+		ResultActions result = 
+				mockMvc.perform(put("/products/{id}", existingId)
+				.header("Authorization", "Bearer " + accessToken)
 				.content(jsonBody)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON));
@@ -81,9 +95,12 @@ public class ProductResourceIntegrationTests {
 	@Test
 	public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
 	
+		String accessToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
 		String jsonBody = objectMapper.writeValueAsString(productDto);
 	
-		ResultActions result = mockMvc.perform(put("/products/{id}", nonExistingId)
+		ResultActions result =
+				mockMvc.perform(put("/products/{id}", nonExistingId)
+				.header("Authorization", "Bearer " + accessToken)
 				.content(jsonBody)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON));
