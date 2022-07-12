@@ -5,7 +5,7 @@ type Props = {
   price: number;
 };
 
-const ProducPrice = ({ price }: Props) => {
+const ProductPrice = ({ price }: Props) => {
   return (
     <div className="product-price-container">
       <span>R$</span>
@@ -14,4 +14,4 @@ const ProducPrice = ({ price }: Props) => {
   );
 };
 
-export default ProducPrice;
+export default ProductPrice;
