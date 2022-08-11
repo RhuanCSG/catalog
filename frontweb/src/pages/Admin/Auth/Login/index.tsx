@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { requestBackendLogin } from 'util/requests';
 
 import './styles.css';
+import { useState } from 'react';
 
 type FormData = {
   username: string;
@@ -11,14 +12,18 @@ type FormData = {
 };
 
 const Login = () => {
+  const [hasError, setHasError] = useState(false);
+
   const { register, handleSubmit } = useForm<FormData>();
 
   const onSubmit = (formData: FormData) => {
     requestBackendLogin(formData)
       .then((response) => {
+        setHasError(false);
         console.log('SUCESSO', response);
       })
       .catch((error) => {
+        setHasError(true);
         console.log('ERRO', error);
       });
     console.log(formData);
@@ -27,6 +32,10 @@ const Login = () => {
   return (
     <div className="base-card login-card">
       <h1>LOGIN</h1>
+      {
+      hasError && (
+      <div className="alert alert-danger">Ocorreu um erro</div>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
           <input
