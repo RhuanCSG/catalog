@@ -1,3 +1,6 @@
+.product-crud-container{
+  max-width: 1200px;
+}
 .product-crud-card {
   margin-bottom: 30px;
   padding-bottom: 20px;
