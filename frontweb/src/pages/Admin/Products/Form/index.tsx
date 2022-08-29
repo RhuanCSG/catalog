@@ -16,7 +16,7 @@ const Form = () => {
                 <input type="text" className="form-control base-input" />
               </div>
               <div>
-                <input type="text" className="form-control base-input " />
+                <input type="text" className="form-control base-input" />
               </div>
             </div>
 
