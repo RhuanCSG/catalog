@@ -34,7 +34,6 @@ const ProductFilter = () => {
               required: 'Campo obrigatório',
             })}
             type="text"
-            className={`form-control base-input`}
             placeholder="Nome do produto"
             name="name"
           />
