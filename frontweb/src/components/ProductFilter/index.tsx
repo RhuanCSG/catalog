@@ -1,27 +1,31 @@
 import './styles.css';
 import { ReactComponent as SearchIcon } from 'assets/images/searchIcon.svg';
 import { Category } from 'types/category';
-import { Controller, get, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { useEffect, useState } from 'react';
 import { requestBackend } from 'util/requests';
 
-type ProductFilterData = {
+export type ProductFilterData = {
   name: string;
   category: Category | null;
 };
 
-const ProductFilter = () => {
+type Props = {
+  onSubmitFilter: (data: ProductFilterData) => void;
+};
+
+const ProductFilter = ({ onSubmitFilter }: Props) => {
   const [selectCategories, setSelectCategories] = useState<Category[]>([]);
   const { register, handleSubmit, setValue, getValues, control } =
     useForm<ProductFilterData>();
 
   const onSubmit = (formData: ProductFilterData) => {
-    console.log('ENVIOU', formData);
+    onSubmitFilter(formData);
   };
 
   const handleFormClear = () => {
-    setValue('name', '');
+    setValue('name', " ");
     setValue('category', null);
   };
 
@@ -32,7 +36,7 @@ const ProductFilter = () => {
       category: getValues('category'),
     };
 
-    console.log('ENVIOU', obj);
+    onSubmitFilter(obj);
   };
 
   useEffect(() => {
@@ -81,7 +85,7 @@ const ProductFilter = () => {
             onClick={handleFormClear}
             className="btn btn-outline-secondary btn-product-filter-clear"
           >
-            LIMPAR <span className="btn-product-filter-word">FILTRO</span>{' '}
+            LIMPAR <span className="btn-product-filter-word">FILTRO</span>
           </button>
         </div>
       </form>
